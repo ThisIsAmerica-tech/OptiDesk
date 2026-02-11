@@ -1,16 +1,27 @@
-# optidesk
+# 🖥️ OptiDesk - System Monitor & Optimizer
 
-A new Flutter project.
+Monitor de rendimiento y optimizador de sistemas para Windows desarrollado en Flutter. Visualiza en tiempo real el consumo de hardware, limpia archivos temporales y organiza tus directorios de manera inteligente.
 
-## Getting Started
+## 🚀 Características principales
+* **Monitoreo en Tiempo Real**: Visualización de CPU, RAM y GPU (NVIDIA) mediante comandos optimizados de PowerShell.
+* **Limpieza de Sistema**: Analiza y elimina archivos temporales para recuperar espacio en disco.
+* **Organizador Inteligente**: Agrupa archivos automáticamente por nombre o extensión en carpetas específicas.
+* **Monitoreo de Red**: Visualización detallada de puertos y conexiones TCP activas.
 
-This project is a starting point for a Flutter application.
+## ⚠️ Requisito Importante
+Para que la aplicación pueda leer correctamente los sensores de la **GPU (Nvidia)** y ciertos datos del sistema, **debe ejecutarse como Administrador**. De lo contrario, los indicadores podrían mostrar 0%.
 
-A few resources to get you started if this is your first Flutter project:
+## 🛠️ Tecnologías utilizadas
+* **Flutter** (UI & Lógica de la aplicación).
+* **PowerShell** (Consultas de hardware profundas).
+* **Dart Isolate** (Búsquedas de archivos en segundo plano para no congelar la interfaz).
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## 👥 Equipo de Desarrollo
+Este proyecto fue desarrollado con orgullo por:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+* **Beder Edison Achiri Sillo** - Lead Developer & AI Enthusiast :v
+* **Carlos Eduardo Loaiza Martinez** - Core Developer
+* **Saul Adain Huillca Rodriguez** - Core Developer
+
+---
+Proyecto desarrollado como parte de las iniciativas de innovación tecnológica <|:v
