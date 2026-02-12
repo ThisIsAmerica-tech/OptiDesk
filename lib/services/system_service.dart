@@ -71,22 +71,40 @@ class SystemService {
   }
 
   Future<List<Map<String, String>>> getTopProcesses() async {
-    try {
-      var result = await shell.run("powershell \"Get-Process | Sort-Object CPU -Descending | Select-Object -First 5 Name, CPU, WorkingSet\"");
-      List<String> lines = result.outLines.where((l) => l.trim().isNotEmpty).toList();
-      List<Map<String, String>> processes = [];
-      for (var i = 2; i < lines.length; i++) {
-        var parts = lines[i].trim().split(RegExp(r'\s+'));
-        if (parts.length >= 3) {
-          processes.add({
-            'name': parts[0],
-            'cpu': parts[1],
-            'ram': (double.parse(parts[2]) / (1024 * 1024)).toStringAsFixed(1) + " MB"
-          });
-        }
+  try {
+    // Cambiamos la forma de enviar el comando para asegurar las comillas en el filtro
+    var result = await shell.run(
+      'powershell -Command "Get-CimInstance Win32_PerfFormattedData_PerfProc_Process | Where-Object { \$_.Name -notmatch \'Idle|_Total|System\' } | Sort-Object PercentProcessorTime -Descending | Select-Object -First 5 Name, PercentProcessorTime, WorkingSetPrivate | ConvertTo-Json"'
+    );
+
+    String output = result.outText.trim();
+    if (output.isEmpty) return [];
+    
+    var decodedData = jsonDecode(output);
+    List<Map<String, String>> processes = [];
+
+    if (decodedData is Map) {
+      processes.add(_formatProcessMap(decodedData));
+    } else if (decodedData is List) {
+      for (var proc in decodedData) {
+        processes.add(_formatProcessMap(proc));
       }
-      return processes;
-    } catch (e) { return []; }
+    }
+
+    return processes;
+  } catch (e) { 
+    debugPrint("Error en procesos: $e");
+    return []; 
+  }
+}
+
+  // Función auxiliar para no repetir código de formateo
+  Map<String, String> _formatProcessMap(dynamic proc) {
+    return {
+      'name': proc['Name'].toString(),
+      'cpu': proc['PercentProcessorTime'].toString(),
+      'ram': (proc['WorkingSetPrivate'] / (1024 * 1024)).toStringAsFixed(1) + " MB"
+    };
   }
 
   // ==========================================

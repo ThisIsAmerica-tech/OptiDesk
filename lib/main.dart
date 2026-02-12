@@ -90,26 +90,26 @@ class _MainScreenState extends State<MainScreen> {
 
           if (mounted) {
             setState(() {
-              // Ajustamos los círculos: forzamos rango 0-100
-              _cpuValue = (data['cpu'] ?? 0.0).toDouble().clamp(0.0, 100.0);
-              _gpuValue = (data['gpu'] ?? 0.0).toDouble().clamp(0.0, 100.0);
-              _ramValue = ramPercent.clamp(0.0, 100.0);
+  // 1. Ajustamos los círculos superiores con el rango correcto (0-100)
+  _cpuValue = (data['cpu'] ?? 0.0).toDouble().clamp(0.0, 100.0);
+  _gpuValue = (data['gpu'] ?? 0.0).toDouble().clamp(0.0, 100.0);
+  _ramValue = ramPercent.clamp(0.0, 100.0);
 
-              // LIMPIEZA DE TABLA: "Domamos" los números gigantes de Windows
-              _topProcesses = processes.map((p) {
-                double rawCpu = double.tryParse(p['cpu'] ?? '0') ?? 0.0;
-                
-                // Si el número es absurdo (como 334.0), lo limitamos a 100 
-                // para que no rompa el diseño de la tabla.
-                double cleanCpu = rawCpu > 100 ? 100.0 : rawCpu;
-                
-                return {
-                  'name': p['name'] ?? 'Desconocido',
-                  'cpu': cleanCpu.toStringAsFixed(1),
-                  'ram': p['ram'] ?? '0 MB',
-                };
-              }).toList();
-            });
+  // 2. Mapeamos los procesos para la tabla de abajo
+  _topProcesses = processes.map((p) {
+    // Primero intentamos convertir el texto a número
+    double rawCpuValue = double.tryParse(p['cpu'] ?? '0.0') ?? 0.0;
+    
+    // Si el número es absurdo, lo limitamos a 100 para no romper el diseño
+    double finalCpu = rawCpuValue > 100 ? 100.0 : rawCpuValue;
+    
+    return {
+      'name': p['name'] ?? 'Desconocido',
+      'cpu': finalCpu.toStringAsFixed(1), // Volvemos a String para tu tabla
+      'ram': p['ram'] ?? '0 MB',
+    };
+  }).toList();
+});
           }
         } catch (e) {
           debugPrint("Error actualizando hardware: $e");
